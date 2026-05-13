@@ -108,3 +108,5 @@ $RECYCLE.BIN/
 =======
 *.pid.lock
 >>>>>>> d088c315e556b2b12c17b8274320a492e53d26ef
+node_modules/
+package-lock.json

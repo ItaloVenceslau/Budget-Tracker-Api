@@ -1,5 +1,15 @@
 {
-  "buildCommand": "chmod +x node_modules/.bin/react-scripts && npm run build",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": "create-react-app",
   "outputDirectory": "build",
-  "installCommand": "npm install --legacy-peer-deps"
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ]
 }
