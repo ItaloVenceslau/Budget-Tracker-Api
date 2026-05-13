@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 // Importar rotas
 const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projectRoutes');
+const errorHandler = require('./middleware/errorHandler');
 
 dotenv.config();
 
