@@ -12,9 +12,11 @@
     "react-icons": "^4.10.0",
     "date-fns": "^2.30.0"
   },
-    "scripts": {
-    "build": "node node_modules/react-scripts/scripts/build.js",
-    "start": "node node_modules/react-scripts/scripts/start.js"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
     "react-scripts": "5.0.1",
@@ -33,11 +35,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "description": "",
-  "main": "postcss.config.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  }
 }
