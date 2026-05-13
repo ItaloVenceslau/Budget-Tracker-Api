@@ -12,9 +12,9 @@
     "react-icons": "^4.10.0",
     "date-fns": "^2.30.0"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build"
+    "scripts": {
+    "build": "node node_modules/react-scripts/scripts/build.js",
+    "start": "node node_modules/react-scripts/scripts/start.js"
   },
   "devDependencies": {
     "react-scripts": "5.0.1",
