@@ -6,7 +6,6 @@ import { ProjectList } from '../Projects/ProjectList';
 import { LoadingSpinner } from '../Common/LoadingSpinner';
 import { FiPlus } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 
 export const Dashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -35,11 +34,7 @@ export const Dashboard = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-    >
+    <div className="animate-fade-up">
       <div className="dashboard-header">
         <h1>Dashboard</h1>
         <p>Visão geral dos seus projetos</p>
@@ -62,17 +57,17 @@ export const Dashboard = () => {
           </div>
           <div className="summary-item">
             <span className="summary-label">Projetos totais</span>
-            <span className="summary-value">{projects.length}</span>
+            <span className="summary-value primary">{projects.length}</span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Projetos concluídos</span>
-            <span className="summary-value highlight">
+            <span className="summary-value success">
               {projects.filter(p => p.status === 'completed').length}
             </span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Budget médio</span>
-            <span className="summary-value highlight">
+            <span className="summary-value warning">
               {stats?.totalBudget && projects.length 
                 ? (stats.totalBudget / projects.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                 : 'R$ 0'}
@@ -82,11 +77,8 @@ export const Dashboard = () => {
       </div>
 
       <div className="mt-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">Seus Projetos</h2>
-        </div>
         <ProjectList projects={projects} onRefresh={loadData} />
       </div>
-    </motion.div>
+    </div>
   );
 };
