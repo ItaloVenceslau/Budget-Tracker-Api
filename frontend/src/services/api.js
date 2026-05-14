@@ -31,4 +31,16 @@ api.interceptors.response.use(
   }
 );
 
+api.interceptors.request.use(
+  (config) => {
+    console.log('Fazendo requisição para:', config.url);  // ← ADICIONE
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export default api;
