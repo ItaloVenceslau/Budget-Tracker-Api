@@ -15,7 +15,9 @@ export const Login = () => {
     setLoading(true);
     const success = await login(email, password);
     setLoading(false);
-    if (success) navigate('/dashboard');
+    if (success) {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -41,6 +43,7 @@ export const Login = () => {
                 className="input pl-10"
                 placeholder="seu@email.com"
                 required
+                disabled={loading}
               />
             </div>
           </div>
@@ -56,6 +59,7 @@ export const Login = () => {
                 className="input pl-10"
                 placeholder="••••••"
                 required
+                disabled={loading}
               />
             </div>
           </div>
@@ -63,9 +67,16 @@ export const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full py-3"
+            className="btn-primary w-full py-3 flex items-center justify-center gap-2"
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Entrando...
+              </>
+            ) : (
+              'Entrar'
+            )}
           </button>
         </form>
 

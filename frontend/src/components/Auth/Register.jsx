@@ -16,7 +16,9 @@ export const Register = () => {
     setLoading(true);
     const success = await register(name, email, password);
     setLoading(false);
-    if (success) navigate('/dashboard');
+    if (success) {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -43,6 +45,7 @@ export const Register = () => {
                 placeholder="Seu nome"
                 required
                 minLength={3}
+                disabled={loading}
               />
             </div>
           </div>
@@ -58,6 +61,7 @@ export const Register = () => {
                 className="input pl-10"
                 placeholder="seu@email.com"
                 required
+                disabled={loading}
               />
             </div>
           </div>
@@ -74,6 +78,7 @@ export const Register = () => {
                 placeholder="mínimo 6 caracteres"
                 required
                 minLength={6}
+                disabled={loading}
               />
             </div>
           </div>
@@ -81,9 +86,16 @@ export const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full py-3"
+            className="btn-primary w-full py-3 flex items-center justify-center gap-2"
           >
-            {loading ? 'Criando conta...' : 'Criar Conta'}
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Criando conta...
+              </>
+            ) : (
+              'Criar Conta'
+            )}
           </button>
         </form>
 

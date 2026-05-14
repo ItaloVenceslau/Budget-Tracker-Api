@@ -1,10 +1,10 @@
 import React from 'react';
-import { Sidebar } from './Sidebar';
+// import { Sidebar } from './Sidebar';
 
 export const Layout = ({ children }) => {
   return (
     <div className="app-layout">
-      <Sidebar />
+      {/* <Sidebar /> */}
       <main className="main-content fade-in-up">
         {children}
       </main>
