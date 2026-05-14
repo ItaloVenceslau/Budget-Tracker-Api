@@ -1,10 +1,11 @@
-// frontend/src/components/Layout/Layout.jsx
 import React from 'react';
+import { Sidebar } from './Sidebar';
 
 export const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="container py-8">
+    <div className="app-layout">
+      <Sidebar />
+      <main className="main-content">
         <div className="animate-fade-up">
           {children}
         </div>
