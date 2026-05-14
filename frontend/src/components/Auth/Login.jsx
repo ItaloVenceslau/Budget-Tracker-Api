@@ -1,3 +1,4 @@
+// frontend/src/components/Auth/Login.jsx
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -15,32 +16,30 @@ export const Login = () => {
     setLoading(true);
     const success = await login(email, password);
     setLoading(false);
-    if (success) {
-      navigate('/dashboard');
-    }
+    if (success) navigate('/dashboard');
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
-            <FiLogIn className="w-8 h-8 text-blue-600" />
+    <div className="auth-container">
+      <div className="auth-card">
+        <div className="text-center">
+          <div className="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <FiLogIn className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Budget Tracker</h1>
-          <p className="text-gray-500 mt-2">Gerencie seus projetos financeiros</p>
+          <h1 className="auth-title">Budget Tracker</h1>
+          <p className="auth-subtitle">Gerencie seus projetos financeiros</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <div className="relative">
-              <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input pl-10"
+                className="input pl-9"
                 placeholder="seu@email.com"
                 required
                 disabled={loading}
@@ -51,12 +50,12 @@ export const Login = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
             <div className="relative">
-              <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input pl-10"
+                className="input pl-9"
                 placeholder="••••••"
                 required
                 disabled={loading}
@@ -67,22 +66,15 @@ export const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full py-3 flex items-center justify-center gap-2"
+            className="btn-primary w-full py-2.5"
           >
-            {loading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Entrando...
-              </>
-            ) : (
-              'Entrar'
-            )}
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-6">
+        <p className="text-center text-sm text-gray-500 mt-6">
           Não tem uma conta?{' '}
-          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link to="/register" className="text-gray-900 font-medium hover:underline">
             Cadastre-se
           </Link>
         </p>
