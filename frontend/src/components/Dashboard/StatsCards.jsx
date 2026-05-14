@@ -1,55 +1,57 @@
 import React from 'react';
-import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiActivity } from 'react-icons/fi';
-import { formatCurrency } from '../../utils/formatCurrency';
+import { FiDollarSign, FiTrendingUp, FiTrendingDown, FiActivity, FiArrowUp, FiArrowDown } from 'react-icons/fi';
 
 export const StatsCards = ({ stats }) => {
   const cards = [
     {
       title: 'Budget Total',
-      value: formatCurrency(stats?.totalBudget || 0),
+      value: `R$ ${(stats?.totalBudget || 0).toLocaleString()}`,
       icon: FiDollarSign,
-      color: 'bg-blue-500',
-      bg: 'bg-blue-100',
-      text: 'text-blue-600'
+      trend: '+12%',
+      trendUp: true,
+      color: '#0ea5e9'
     },
     {
       title: 'Total Gasto',
-      value: formatCurrency(stats?.totalSpent || 0),
+      value: `R$ ${(stats?.totalSpent || 0).toLocaleString()}`,
       icon: FiTrendingDown,
-      color: 'bg-red-500',
-      bg: 'bg-red-100',
-      text: 'text-red-600'
+      trend: '+5%',
+      trendUp: false,
+      color: '#ef4444'
     },
     {
       title: 'Orçamento Restante',
-      value: formatCurrency(stats?.remainingBudget || 0),
+      value: `R$ ${(stats?.remainingBudget || 0).toLocaleString()}`,
       icon: FiTrendingUp,
-      color: 'bg-green-500',
-      bg: 'bg-green-100',
-      text: 'text-green-600'
+      trend: '+8%',
+      trendUp: true,
+      color: '#10b981'
     },
     {
       title: 'Projetos Ativos',
       value: stats?.activeProjects || 0,
       icon: FiActivity,
-      color: 'bg-purple-500',
-      bg: 'bg-purple-100',
-      text: 'text-purple-600'
+      trend: '+3%',
+      trendUp: true,
+      color: '#d946ef'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="stats-grid">
       {cards.map((card, index) => (
-        <div key={index} className="card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">{card.title}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{card.value}</p>
+        <div key={index} className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-card-title">{card.title}</span>
+            <div className="stat-card-icon" style={{ background: `linear-gradient(135deg, ${card.color}15, ${card.color}08)` }}>
+              <card.icon size={20} style={{ color: card.color }} />
             </div>
-            <div className={`${card.bg} p-3 rounded-full`}>
-              <card.icon className={`w-6 h-6 ${card.text}`} />
-            </div>
+          </div>
+          <div className="stat-card-value">{card.value}</div>
+          <div className="stat-card-trend">
+            {card.trendUp ? <FiArrowUp size={14} className="trend-up" /> : <FiArrowDown size={14} className="trend-down" />}
+            <span className={card.trendUp ? 'trend-up' : 'trend-down'}>{card.trend}</span>
+            <span className="text-gray-400 text-xs ml-2">vs mês anterior</span>
           </div>
         </div>
       ))}
