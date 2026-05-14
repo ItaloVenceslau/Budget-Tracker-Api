@@ -21,14 +21,12 @@ export const Login = () => {
 
   return (
     <div className="auth-container">
-      <div className="auth-card">
-        <div className="text-center">
-          <div className="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <FiLogIn className="w-5 h-5 text-white" />
-          </div>
-          <h1 className="auth-title">Budget Tracker</h1>
-          <p className="auth-subtitle">Gerencie seus projetos financeiros</p>
+      <div className="auth-card animate-fade-scale">
+        <div className="auth-icon">
+          <FiLogIn className="w-6 h-6 text-white" />
         </div>
+        <h1 className="auth-title">Budget Tracker</h1>
+        <p className="auth-subtitle">Gerencie seus projetos financeiros</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -68,13 +66,17 @@ export const Login = () => {
             disabled={loading}
             className="btn-primary w-full py-2.5"
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? (
+              <div className="loading-spinner w-5 h-5 border-2 border-white border-t-transparent" />
+            ) : (
+              'Entrar'
+            )}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Não tem uma conta?{' '}
-          <Link to="/register" className="text-gray-900 font-medium hover:underline">
+          <Link to="/register" className="text-primary font-medium hover:underline">
             Cadastre-se
           </Link>
         </p>

@@ -37,15 +37,14 @@ export const Dashboard = () => {
   return (
     <div>
       <div className="dashboard-header">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1>Dashboard</h1>
-            <p>Visão geral dos seus projetos</p>
-          </div>
-          <Link to="/projects/new" className="btn-primary flex items-center gap-2">
-            <FiPlus size={16} /> Novo Projeto
-          </Link>
-        </div>
+        <h1 className="gradient-text">Dashboard</h1>
+        <p>Visão geral dos seus projetos</p>
+      </div>
+
+      <div className="flex justify-end mb-6">
+        <Link to="/projects/new" className="btn-primary">
+          <FiPlus size={16} /> Novo Projeto
+        </Link>
       </div>
 
       <StatsCards stats={stats} />
@@ -58,17 +57,17 @@ export const Dashboard = () => {
             <h2 className="card-title">Resumo Rápido</h2>
           </div>
           <div className="space-y-3">
-            <div className="flex justify-between py-2 border-b border-gray-100">
+            <div className="flex justify-between items-center py-2 border-b border-gray-100">
               <span className="text-gray-500 text-sm">Projetos totais</span>
               <span className="font-semibold text-gray-900">{projects.length}</span>
             </div>
-            <div className="flex justify-between py-2 border-b border-gray-100">
+            <div className="flex justify-between items-center py-2 border-b border-gray-100">
               <span className="text-gray-500 text-sm">Projetos concluídos</span>
               <span className="font-semibold text-green-600">
                 {projects.filter(p => p.status === 'completed').length}
               </span>
             </div>
-            <div className="flex justify-between py-2">
+            <div className="flex justify-between items-center py-2">
               <span className="text-gray-500 text-sm">Budget médio</span>
               <span className="font-semibold text-gray-900">
                 {stats?.totalBudget && projects.length 
@@ -81,8 +80,8 @@ export const Dashboard = () => {
       </div>
 
       <div className="mt-8">
-        <div className="card-header mb-4">
-          <h2 className="card-title">Seus Projetos</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-800">Seus Projetos</h2>
         </div>
         <ProjectList projects={projects} onRefresh={loadData} />
       </div>
