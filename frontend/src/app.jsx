@@ -16,6 +16,8 @@ import { projectService } from './services/projectService';
 import { FiFolder, FiPlus } from 'react-icons/fi';
 
 // ===== COMPONENTE PROJECTS LIST (dentro do App.jsx mesmo) =====
+// Substitua o ProjectsList atual por este:
+
 const ProjectsList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,46 +38,60 @@ const ProjectsList = () => {
 
   if (loading) return <LoadingSpinner />;
 
-  if (projects.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">📁</div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">Nenhum projeto ainda</h2>
-        <p className="text-gray-500 mb-6">Comece criando seu primeiro projeto</p>
-        <Link to="/projects/new" className="btn-primary inline-flex items-center gap-2">
-          <FiPlus /> Criar projeto
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Meus Projetos</h1>
-        <Link to="/projects/new" className="btn-primary flex items-center gap-2">
-          <FiPlus /> Novo Projeto
+    <div className="projects-page">
+      <div className="dashboard-header">
+        <h1>Meus Projetos</h1>
+        <p>Gerencie todos os seus projetos financeiros</p>
+      </div>
+
+      <div className="flex justify-end mb-8">
+        <Link to="/projects/new" className="btn-new-project">
+          <FiPlus size={18} /> Novo Projeto
         </Link>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map(project => (
-          <Link key={project._id} to={`/projects/${project._id}`} className="bg-white rounded-xl p-5 shadow-md hover:shadow-xl transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                <FiFolder className="text-indigo-600" />
-              </div>
-              <h3 className="font-bold text-lg">{project.name}</h3>
-            </div>
-            <p className="text-gray-500 text-sm mb-3">{project.description || 'Sem descrição'}</p>
-            <div className="flex justify-between items-center">
-              <span className="font-bold text-green-600">R$ {project.budget?.toLocaleString()}</span>
-              <span className="text-xs px-2 py-1 rounded-full bg-gray-100">
-                {project.status === 'active' ? 'Ativo' : project.status === 'completed' ? 'Concluído' : 'Planejamento'}
-              </span>
-            </div>
+
+      {projects.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-icon">📁</div>
+          <h3 className="empty-state-title">Nenhum projeto ainda</h3>
+          <p className="empty-state-description">Comece criando seu primeiro projeto</p>
+          <Link to="/projects/new" className="btn-primary mt-4 inline-flex">
+            <FiPlus /> Criar projeto
           </Link>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="projects-list-grid">
+          {projects.map((project) => (
+            <Link key={project._id} to={`/projects/${project._id}`} className="project-list-card">
+              <div className="project-list-card-header">
+                <div className="project-list-icon">
+                  <FiFolder size={24} />
+                </div>
+                <span className={`project-list-status status-${project.status || 'planning'}`}>
+                  {project.status === 'active' ? 'Ativo' : 
+                   project.status === 'planning' ? 'Planejamento' :
+                   project.status === 'completed' ? 'Concluído' : 'Cancelado'}
+                </span>
+              </div>
+              <h3 className="project-list-title">{project.name}</h3>
+              <p className="project-list-description">{project.description || 'Sem descrição'}</p>
+              <div className="project-list-progress">
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill" 
+                    style={{ width: `${Math.min(((project.spent || 0) / (project.budget || 1)) * 100, 100)}%` }}
+                  />
+                </div>
+                <div className="project-list-numbers">
+                  <span className="budget">💰 R$ {(project.budget || 0).toLocaleString()}</span>
+                  <span className="spent">💸 R$ {(project.spent || 0).toLocaleString()}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

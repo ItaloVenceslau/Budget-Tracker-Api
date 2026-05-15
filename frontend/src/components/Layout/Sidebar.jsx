@@ -1,14 +1,12 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { FiGrid, FiPlusCircle, FiBarChart2, FiFolder, FiLogOut } from 'react-icons/fi';
+import React, { useContext } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FiGrid, FiPlusCircle, FiBarChart2, FiFolder, FiLogOut, FiUser } from 'react-icons/fi';
 import { AuthContext } from '../../context/AuthContext';
-import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = () => {
   const location = useLocation();
-  const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
 
   const navItems = [
     { path: '/dashboard', icon: FiGrid, label: 'Dashboard' },
@@ -22,20 +20,26 @@ export const Sidebar = () => {
     navigate('/login');
   };
 
+  // Pegar o nome do usuário do contexto ou do localStorage
+  const userName = user?.name || localStorage.getItem('userName') || 'Usuário';
+
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon">
-          <span className="text-white text-lg">💰</span>
+          <FiUser size={20} />
         </div>
-        <h1>BudgetFlow</h1>
+        <div>
+          <h1>Olá,</h1>
+          <p className="sidebar-user-name">{userName}</p>
+        </div>
       </div>
 
       <nav className="sidebar-nav">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path ||
-            (item.path === '/dashboard' && location.pathname === '/dashboard') ||
-            (item.path === '/projects' && location.pathname.startsWith('/projects'));
+            (item.path === '/projects' && location.pathname.startsWith('/projects')) ||
+            (item.path === '/dashboard' && location.pathname === '/dashboard');
           return (
             <Link
               key={item.path}
@@ -49,12 +53,10 @@ export const Sidebar = () => {
         })}
       </nav>
 
-      <div className="sidebar-footer">
-        <button onClick={handleLogout} className="sidebar-logout">
-          <FiLogOut size={18} />
-          <span>Sair</span>
-        </button>
-      </div>
+      <button onClick={handleLogout} className="sidebar-logout">
+        <FiLogOut size={18} />
+        <span>Sair</span>
+      </button>
     </aside>
   );
 };
