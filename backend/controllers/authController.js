@@ -9,7 +9,7 @@ const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    console.log('📝 Register request:', { name, email, password: '***' });
+    // console.log('📝 Register request:', { name, email, password: '***' });
 
     // Validation
     if (!name || !email || !password) {
@@ -61,7 +61,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log('🔐 Login request:', { email, password: '***' });
+    // console.log('🔐 Login request:', { email, password: '***' });
 
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
@@ -73,8 +73,8 @@ const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    console.log('✅ User found:', user.email);
-    console.log('📦 Password exists:', !!user.password);
+    // console.log('✅ User found:', user.email);
+    // console.log('📦 Password exists:', !!user.password);
 
     if (!user.password) {
       console.error('❌ User has no password!');
@@ -84,14 +84,14 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      console.log('❌ Password incorrect');
+    //   console.log('❌ Password incorrect');
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const token = generateToken(user._id);
-    console.log(token);
+    // console.log(token);
 
-    console.log('✅ Login successful');
+    // console.log('✅ Login successful');
 
     res.json({
       message: 'Login successful',
@@ -116,7 +116,7 @@ const fixUserPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log('🔧 Fix password request:', email);
+    // console.log('🔧 Fix password request:', email);
 
     const user = await User.findOne({ email });
 
@@ -134,7 +134,7 @@ const fixUserPassword = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    console.log('✅ Password fixed for:', email);
+    // console.log('✅ Password fixed for:', email);
 
     res.json({
       message: 'Password fixed successfully! Your projects were kept.',

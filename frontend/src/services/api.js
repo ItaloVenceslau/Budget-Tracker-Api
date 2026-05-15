@@ -12,16 +12,16 @@ api.interceptors.request.use(
   (config) => {
     // 🔥 NÃO adicionar token nas rotas de autenticação
     if (config.url.includes('/auth/')) {
-      console.log('🔓 Rota pública, sem token:', config.url);
+      // console.log('🔓 Rota pública, sem token:', config.url);
       return config;
     }
     
     const token = localStorage.getItem('token');
     if (token) {
-      console.log('🔐 Adicionando token para:', config.url);
+      // console.log('🔐 Adicionando token para:', config.url);
       config.headers.Authorization = `Bearer ${token}`;
     } else {
-      console.log('⚠️ Sem token para rota protegida:', config.url);
+      // console.log('⚠️ Sem token para rota protegida:', config.url);
     }
     return config;
   },
@@ -34,14 +34,14 @@ api.interceptors.request.use(
 // Interceptor para tratar erros de resposta
 api.interceptors.response.use(
   (response) => {
-    console.log('✅ Resposta recebida:', response.config.url, response.status);
+    // console.log('✅ Resposta recebida:', response.config.url, response.status);
     return response;
   },
   (error) => {
-    console.error('❌ Erro na resposta:', error.response?.status, error.response?.data);
+    // console.error('❌ Erro na resposta:', error.response?.status, error.response?.data);
     
     if (error.response?.status === 401) {
-      console.log('🔒 Token expirado ou inválido, limpando...');
+      // console.log('🔒 Token expirado ou inválido, limpando...');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       

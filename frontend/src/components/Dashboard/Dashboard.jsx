@@ -21,7 +21,7 @@ export const Dashboard = () => {
         projectService.getAll(),
         projectService.getStats()
       ]);
-      console.log('Projetos carregados:', projectsData);
+      // console.log('Projetos carregados:', projectsData);
       setProjects(projectsData || []);
       setStats(statsData);
     } catch (error) {

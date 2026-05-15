@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
   try {
-    console.log('1️⃣ AuthContext.login chamado com:', { email, password: password ? '***' : 'MISSING' });
+    // console.log('1️⃣ AuthContext.login chamado com:', { email, password: password ? '***' : 'MISSING' });
     
     if (!email || !password) {
       console.error('❌ Email ou senha vazios');
@@ -28,10 +28,10 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
     
-    console.log('2️⃣ Chamando authService.login...');
+    // console.log('2️⃣ Chamando authService.login...');
     const data = await authService.login({ email, password });
     
-    console.log('3️⃣ Dados recebidos do service:', data);
+    // console.log('3️⃣ Dados recebidos do service:', data);
     
     if (!data || !data.token) {
       console.error('❌ Token não veio na resposta:', data);
@@ -39,16 +39,16 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
     
-    console.log('4️⃣ Salvando token no localStorage...');
+    // console.log('4️⃣ Salvando token no localStorage...');
     localStorage.setItem('token', data.token);
     
     const userName = data.user?.name || email.split('@')[0];
     localStorage.setItem('userName', userName);
     
-    console.log('5️⃣ Atualizando estado do usuário...');
+    // console.log('5️⃣ Atualizando estado do usuário...');
     setUser({ name: userName });
     
-    console.log('6️⃣ Login completo! Redirecionando...');
+    // console.log('6️⃣ Login completo! Redirecionando...');
     toast.success(`Bem-vindo, ${userName}! 🎉`);
     return true;
     
