@@ -9,47 +9,47 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Verificar se há token salvo ao carregar
-    const token = authService.getToken();
-    const savedUser = authService.getUser();
+    const token = localStorage.getItem('token');
+    const savedUserName = localStorage.getItem('userName');
     
-    if (token && savedUser) {
-      console.log('🔄 Usuário já autenticado:', savedUser.email);
-      setUser(savedUser);
-    } else if (token && !savedUser) {
-      // Token existe mas não tem dados do usuário
-      console.log('⚠️ Token encontrado sem dados do usuário');
-      // Opcional: buscar dados do usuário do backend
+    if (token && savedUserName) {
+      setUser({ name: savedUserName });
     }
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
     try {
-      // 🔥 LIMPAR TOKEN ANTIGO ANTES DE LOGAR
+      // Limpar dados antigos
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('userName');
       
-      console.log('🔐 Enviando requisição de login...');
+      console.log('Tentando login com:', email);
       const data = await authService.login({ email, password });
       
+      console.log('Resposta do login:', data);
+      
       if (!data.token) {
-        throw new Error('Token não recebido');
+        throw new Error('Token não recebido do servidor');
       }
       
-      // Salvar token e dados do usuário
-      authService.setToken(data.token);
-      authService.setUser({ email, name: data.user?.name || email.split('@')[0] });
-      setUser({ email });
+      // Salvar token
+      localStorage.setItem('token', data.token);
       
-      toast.success('Login realizado com sucesso!');
-      console.log('✅ Login concluído');
+      // Salvar nome do usuário
+      const userName = data.user?.name || email.split('@')[0];
+      localStorage.setItem('userName', userName);
+      
+      setUser({ name: userName });
+      
+      toast.success(`Bem-vindo, ${userName}! 🎉`);
       return true;
     } catch (error) {
-      console.error('❌ Erro detalhado no login:', error);
+      console.error('Erro detalhado no login:', error);
       const errorMessage = error.response?.data?.error || 
                           error.response?.data?.message || 
-                          'Erro no login';
+                          error.message ||
+                          'Erro no login. Tente novamente.';
       toast.error(errorMessage);
       return false;
     }
@@ -57,53 +57,38 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      // 🔥 LIMPAR TOKEN ANTIGO ANTES DE REGISTRAR
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('userName');
       
-      console.log('📝 Enviando requisição de registro...');
       const data = await authService.register({ name, email, password });
       
       if (!data.token) {
         throw new Error('Token não recebido');
       }
       
-      // Salvar token e dados do usuário
-      authService.setToken(data.token);
-      authService.setUser({ name, email });
-      setUser({ email, name });
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userName', name);
       
-      toast.success('Conta criada com sucesso!');
-      console.log('✅ Registro concluído');
+      setUser({ name: name });
+      
+      toast.success(`Conta criada! Bem-vindo, ${name}! 🎉`);
       return true;
     } catch (error) {
-      console.error('❌ Erro detalhado no registro:', error);
-      const errorMessage = error.response?.data?.error || 
-                          error.response?.data?.message || 
-                          'Erro no cadastro';
+      const errorMessage = error.response?.data?.error || 'Erro no cadastro';
       toast.error(errorMessage);
       return false;
     }
   };
 
   const logout = () => {
-    console.log('🚪 Executando logout...');
-    authService.logout();
+    localStorage.removeItem('token');
+    localStorage.removeItem('userName');
     setUser(null);
-    toast.success('Logout realizado');
-  };
-
-  const value = {
-    user,
-    loading,
-    login,
-    register,
-    logout,
-    isAuthenticated: !!user || authService.isAuthenticated()
+    toast.success('Logout realizado! 👋');
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
