@@ -83,6 +83,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
+    localStorage.removeItem('user'); // 🔥 ADICIONE
+    sessionStorage.clear(); // 🔥 ADICIONE
     setUser(null);
     toast.success('Logout realizado! 👋');
   };
