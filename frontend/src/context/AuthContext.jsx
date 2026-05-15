@@ -19,45 +19,15 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    try {
-      console.log('🔐 Tentando login com:', email);
-      
-      if (!email || !password) {
-        toast.error('Preencha email e senha');
-        return false;
-      }
-      
-      const data = await authService.login({ email, password });
-      
-      if (!data.token) {
-        throw new Error('Token não recebido');
-      }
-      
-      localStorage.setItem('token', data.token);
-      const userName = data.user?.name || email.split('@')[0];
-      localStorage.setItem('userName', userName);
-      setUser({ name: userName });
-      
-      toast.success(`Bem-vindo, ${userName}! 🎉`);
-      return true;
-      
-    } catch (error) {
-      console.error('❌ Erro no login:', error);
-      
-      let errorMessage = 'Erro no login. Tente novamente.';
-      
-      if (error.response?.status === 401) {
-        errorMessage = 'Email ou senha inválidos';
-      } else if (error.response?.status === 500) {
-        errorMessage = 'Erro no servidor. Tente novamente mais tarde.';
-      } else if (error.response?.data?.error) {
-        errorMessage = error.response.data.error;
-      }
-      
-      toast.error(errorMessage);
-      return false;
-    }
-  };
+  try {
+    const data = await authService.login({ email, password });
+    // ... resto
+  } catch (error) {
+    // APENAS MOSTRA ERRO - NÃO TENTA RESETAR
+    toast.error('Email ou senha inválidos');
+    return false;
+  }
+};
 
   const register = async (name, email, password) => {
     try {
