@@ -14,15 +14,13 @@ export const authService = {
   },
   
   login: async (credentials) => {
-    try {
-      console.log('🔐 Tentando login:', credentials.email);
-      const response = await api.post('/auth/login', credentials);
-      console.log('✅ Login bem-sucedido');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Erro no login:', error.response?.data);
-      throw error;
+    console.log('🔐 Login enviando:', credentials);
+    // 🔥 GARANTIR QUE OS CAMPOS ESTÃO CORRETOS
+    if (!credentials.email || !credentials.password) {
+      throw new Error('Email e senha são obrigatórios');
     }
+    const response = await api.post('/auth/login', credentials);
+    return response.data;
   },
   
   logout: () => {
