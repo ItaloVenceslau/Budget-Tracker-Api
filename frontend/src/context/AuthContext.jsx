@@ -20,23 +20,16 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // Limpar dados antigos
-      localStorage.removeItem('token');
-      localStorage.removeItem('userName');
+      console.log('🔐 Tentando login:', email);
       
-      console.log('Tentando login com:', email);
       const data = await authService.login({ email, password });
       
-      console.log('Resposta do login:', data);
-      
       if (!data.token) {
-        throw new Error('Token não recebido do servidor');
+        throw new Error('Token não recebido');
       }
       
-      // Salvar token
       localStorage.setItem('token', data.token);
       
-      // Salvar nome do usuário
       const userName = data.user?.name || email.split('@')[0];
       localStorage.setItem('userName', userName);
       
@@ -45,11 +38,8 @@ export const AuthProvider = ({ children }) => {
       toast.success(`Bem-vindo, ${userName}! 🎉`);
       return true;
     } catch (error) {
-      console.error('Erro detalhado no login:', error);
-      const errorMessage = error.response?.data?.error || 
-                          error.response?.data?.message || 
-                          error.message ||
-                          'Erro no login. Tente novamente.';
+      console.error('Erro no login:', error);
+      const errorMessage = error.response?.data?.error || 'Erro no login';
       toast.error(errorMessage);
       return false;
     }
@@ -57,9 +47,6 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userName');
-      
       const data = await authService.register({ name, email, password });
       
       if (!data.token) {
@@ -83,8 +70,6 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
-    localStorage.removeItem('user'); // 🔥 ADICIONE
-    sessionStorage.clear(); // 🔥 ADICIONE
     setUser(null);
     toast.success('Logout realizado! 👋');
   };
