@@ -7,6 +7,7 @@ import { FiFolder, FiPlus } from 'react-icons/fi';
 export const ProjectsList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     loadProjects();
@@ -14,16 +15,35 @@ export const ProjectsList = () => {
 
   const loadProjects = async () => {
     try {
+      setLoading(true);
       const data = await projectService.getAll();
-      setProjects(data);
-    } catch (error) {
-      console.error('Erro ao carregar projetos:', error);
+      console.log('Projetos carregados:', data); // LOG PARA DEBUG
+      setProjects(data || []);
+      setError(null);
+    } catch (err) {
+      console.error('Erro ao carregar projetos:', err);
+      setError('Não foi possível carregar os projetos. Tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className="empty-state">
+        <div className="empty-state-icon">⚠️</div>
+        <h3 className="empty-state-title">Erro ao carregar</h3>
+        <p className="empty-state-description">{error}</p>
+        <button onClick={loadProjects} className="btn-primary mt-4">
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
 
   if (projects.length === 0) {
     return (
@@ -65,9 +85,9 @@ export const ProjectsList = () => {
             </p>
             <div className="project-card-footer">
               <span className="project-card-budget">
-                R$ {project.budget.toLocaleString()}
+                R$ {project.budget?.toLocaleString() || 0}
               </span>
-              <span className={`project-card-status status-${project.status}`}>
+              <span className={`project-card-status status-${project.status || 'planning'}`}>
                 {project.status === 'active' ? 'Ativo' : 
                  project.status === 'planning' ? 'Planejamento' :
                  project.status === 'completed' ? 'Concluído' : 'Cancelado'}
@@ -76,7 +96,7 @@ export const ProjectsList = () => {
             <div className="project-card-progress">
               <div 
                 className="project-card-progress-bar" 
-                style={{ width: `${Math.min((project.spent / project.budget) * 100, 100)}%` }}
+                style={{ width: `${Math.min(((project.spent || 0) / (project.budget || 1)) * 100, 100)}%` }}
               />
             </div>
           </Link>
