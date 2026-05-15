@@ -18,70 +18,47 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-const login = async (email, password) => {
-  try {
-    console.log('🔐 Tentando login com:', email);
-    
-    // 🔥 LIMPAR COMPLETAMENTE ANTES DE TENTAR
-    localStorage.clear();
-    sessionStorage.clear();
-    
-    if (!email || !password) {
-      toast.error('Preencha email e senha');
+  const login = async (email, password) => {
+    try {
+      console.log('🔐 Tentando login com:', email);
+      
+      if (!email || !password) {
+        toast.error('Preencha email e senha');
+        return false;
+      }
+      
+      const data = await authService.login({ email, password });
+      
+      if (!data.token) {
+        throw new Error('Token não recebido');
+      }
+      
+      localStorage.setItem('token', data.token);
+      const userName = data.user?.name || email.split('@')[0];
+      localStorage.setItem('userName', userName);
+      setUser({ name: userName });
+      
+      toast.success(`Bem-vindo, ${userName}! 🎉`);
+      return true;
+      
+    } catch (error) {
+      console.error('❌ Erro no login:', error);
+      
+      let errorMessage = 'Erro no login. Tente novamente.';
+      
+      if (error.response?.status === 401) {
+        errorMessage = 'Email ou senha inválidos';
+      } else if (error.response?.status === 500) {
+        errorMessage = 'Erro no servidor. Tente novamente mais tarde.';
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      }
+      
+      toast.error(errorMessage);
       return false;
     }
-    
-    const data = await authService.login({ email, password });
-    
-    if (!data.token) {
-      throw new Error('Token não recebido');
-    }
-    
-    // Salvar apenas os dados novos
-    localStorage.setItem('token', data.token);
-    const userName = data.user?.name || email.split('@')[0];
-    localStorage.setItem('userName', userName);
-    setUser({ name: userName });
-    
-    toast.success(`Bem-vindo, ${userName}! 🎉`);
-    return true;
-    
-  } catch (error) {
-    console.error('❌ Erro no login:', error);
-    
-    // 🔥 SE O LOGIN FALHOU, TENTA REGISTRAR UM USUÁRIO NOVO
-    if (error.response?.status === 500 || error.response?.status === 401) {
-      console.log('⚠️ Login falhou, tentando criar novo usuário...');
-      
-      // Limpar tudo novamente
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      try {
-        // Tentar registrar com email e senha diferentes
-        const newEmail = `${email.split('@')[0]}_${Date.now()}@${email.split('@')[1] || 'email.com'}`;
-        const registerData = await authService.register({ 
-          name: email.split('@')[0], 
-          email: newEmail, 
-          password 
-        });
-        
-        if (registerData.token) {
-          localStorage.setItem('token', registerData.token);
-          localStorage.setItem('userName', email.split('@')[0]);
-          setUser({ name: email.split('@')[0] });
-          toast.success(`Conta criada com sucesso! Bem-vindo!`);
-          return true;
-        }
-      } catch (registerError) {
-        toast.error('Não foi possível criar nova conta. Tente outro email.');
-      }
-    }
-    
-    toast.error(error.response?.data?.error || 'Erro no login');
-    return false;
-  }
-};
+  };
+
   const register = async (name, email, password) => {
     try {
       const data = await authService.register({ name, email, password });
@@ -98,7 +75,14 @@ const login = async (email, password) => {
       toast.success(`Conta criada! Bem-vindo, ${name}! 🎉`);
       return true;
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Erro no cadastro';
+      let errorMessage = 'Erro no cadastro';
+      
+      if (error.response?.status === 400) {
+        errorMessage = error.response.data?.error || 'Usuário já existe';
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      }
+      
       toast.error(errorMessage);
       return false;
     }
