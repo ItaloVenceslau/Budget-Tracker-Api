@@ -1389,3 +1389,137 @@ body {
   background: #fee2e2;
   transform: scale(1.05);
 }
+
+/* ===== GASTO POR PROJETO (BUDGET CHART) ===== */
+.chart-container {
+  background: white;
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.chart-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.chart-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chart-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #eef2ff, #fae8ff);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6366f1;
+}
+
+/* ===== RESUMO RÁPIDO ===== */
+.summary-container {
+  background: white;
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.summary-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.summary-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.summary-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+}
+
+.summary-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+.summary-value.primary {
+  color: #6366f1;
+}
+
+.summary-value.success {
+  color: #10b981;
+}
+
+.summary-value.warning {
+  color: #f59e0b;
+}
+
+.summary-value.info {
+  color: #3b82f6;
+}

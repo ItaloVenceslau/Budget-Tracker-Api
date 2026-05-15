@@ -4,7 +4,7 @@ import { projectService } from '../../services/projectService';
 import { StatsCards } from './StatsCards';
 import { BudgetChart } from './BudgetChart';
 import { LoadingSpinner } from '../Common/LoadingSpinner';
-import { FiPlus, FiFolder } from 'react-icons/fi';
+import { FiPlus, FiFolder, FiTrendingUp, FiCheckCircle, FiActivity, FiDollarSign } from 'react-icons/fi';
 
 export const Dashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -51,34 +51,53 @@ export const Dashboard = () => {
       {/* Stats Cards */}
       <StatsCards stats={stats} />
       
-      {/* Charts e Resumo */}
+      {/* Charts e Resumo - VERSÃO ESTILIZADA */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        {/* Gráfico de Gastos */}
         <BudgetChart projects={projects} />
         
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Resumo Rápido</h2>
-          </div>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-              <span className="text-gray-500">Projetos totais</span>
-              <span className="font-bold text-2xl text-indigo-600">{projects.length}</span>
+        {/* Resumo Rápido Estilizado */}
+        <div className="summary-container">
+          <div className="summary-header">
+            <div className="summary-title">
+              <div className="summary-icon">
+                📊
+              </div>
+              Resumo Rápido
             </div>
-            <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-              <span className="text-gray-500">Projetos concluídos</span>
-              <span className="font-bold text-2xl text-green-600">
+          </div>
+          <div className="summary-grid">
+            <div className="summary-item">
+              <div className="summary-label-wrapper">
+                <FiFolder size={16} className="summary-item-icon" />
+                <span className="summary-label">Projetos totais</span>
+              </div>
+              <span className="summary-value primary">{projects.length}</span>
+            </div>
+            <div className="summary-item">
+              <div className="summary-label-wrapper">
+                <FiCheckCircle size={16} className="summary-item-icon" />
+                <span className="summary-label">Projetos concluídos</span>
+              </div>
+              <span className="summary-value success">
                 {projects.filter(p => p.status === 'completed').length}
               </span>
             </div>
-            <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-              <span className="text-gray-500">Projetos ativos</span>
-              <span className="font-bold text-2xl text-blue-600">
+            <div className="summary-item">
+              <div className="summary-label-wrapper">
+                <FiActivity size={16} className="summary-item-icon" />
+                <span className="summary-label">Projetos ativos</span>
+              </div>
+              <span className="summary-value info">
                 {projects.filter(p => p.status === 'active').length}
               </span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-500">Budget médio</span>
-              <span className="font-bold text-lg text-purple-600">
+            <div className="summary-item">
+              <div className="summary-label-wrapper">
+                <FiTrendingUp size={16} className="summary-item-icon" />
+                <span className="summary-label">Budget médio</span>
+              </div>
+              <span className="summary-value warning">
                 {projects.length > 0 
                   ? (projects.reduce((sum, p) => sum + (p.budget || 0), 0) / projects.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                   : 'R$ 0'}
