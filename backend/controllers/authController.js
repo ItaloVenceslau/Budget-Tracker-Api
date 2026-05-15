@@ -89,6 +89,7 @@ const login = async (req, res) => {
     }
 
     const token = generateToken(user._id);
+    console.log(token);
 
     console.log('✅ Login successful');
 
@@ -101,6 +102,8 @@ const login = async (req, res) => {
         email: user.email
       }
     });
+
+    
 
   } catch (error) {
     console.error('❌ Login error:', error);
