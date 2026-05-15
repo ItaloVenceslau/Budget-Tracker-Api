@@ -126,6 +126,31 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+  path="/projects"
+  element={
+    <ProtectedRoute>
+      <PageTransition>
+        <Layout>
+          <ProjectsList />
+        </Layout>
+      </PageTransition>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/analytics"
+  element={
+    <ProtectedRoute>
+      <PageTransition>
+        <Layout>
+          <Analytics />
+        </Layout>
+      </PageTransition>
+    </ProtectedRoute>
+  }
+/>
           
           {/* Rota 404 */}
           <Route
@@ -150,6 +175,7 @@ function App() {
         </Routes>
       </AnimatePresence>
     </AuthProvider>
+    
   );
 }
 
