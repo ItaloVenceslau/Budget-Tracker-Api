@@ -1357,3 +1357,35 @@ body {
   margin-top: 0.25rem;
   text-align: right;
 }
+
+/* ===== BOTÕES DE EDITAR E DELETAR ===== */
+.project-card-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.project-edit-btn,
+.project-delete-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: #f3f4f6;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.project-edit-btn:hover {
+  background: #dbeafe;
+  transform: scale(1.05);
+}
+
+.project-delete-btn:hover {
+  background: #fee2e2;
+  transform: scale(1.05);
+}
