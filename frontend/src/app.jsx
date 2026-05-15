@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import {toast} from 'react-hot-toast';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import { Login } from './components/Auth/Login';
 import { Register } from './components/Auth/Register';
@@ -14,27 +15,42 @@ import { PageTransition } from './components/Common/PageTransition';
 import { LoadingSpinner } from './components/Common/LoadingSpinner';
 import { projectService } from './services/projectService';
 import { FiFolder, FiPlus } from 'react-icons/fi';
+import { ProjectCard } from './components/Projects/ProjectCard';
 
 // ===== COMPONENTE PROJECTS LIST (dentro do App.jsx mesmo) =====
 // Substitua o ProjectsList atual por este:
 
+// ===== COMPONENTE PROJECTS LIST COM BOTÕES DE EDITAR E DELETAR =====
 const ProjectsList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const loadProjects = async () => {
+    try {
+      const data = await projectService.getAll();
+      setProjects(data || []);
+    } catch (error) {
+      console.error('Erro:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadProjects = async () => {
-      try {
-        const data = await projectService.getAll();
-        setProjects(data || []);
-      } catch (error) {
-        console.error('Erro:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadProjects();
   }, []);
+
+  const handleDelete = async (id, name) => {
+    if (window.confirm(`Tem certeza que deseja excluir o projeto "${name}"?`)) {
+      try {
+        await projectService.delete(id);
+        toast.success('Projeto excluído com sucesso!');
+        loadProjects(); // Recarregar a lista
+      } catch (error) {
+        toast.error('Erro ao excluir projeto');
+      }
+    }
+  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -63,32 +79,45 @@ const ProjectsList = () => {
       ) : (
         <div className="projects-list-grid">
           {projects.map((project) => (
-            <Link key={project._id} to={`/projects/${project._id}`} className="project-list-card">
+            <div key={project._id} className="project-list-card">
               <div className="project-list-card-header">
                 <div className="project-list-icon">
                   <FiFolder size={24} />
                 </div>
-                <span className={`project-list-status status-${project.status || 'planning'}`}>
-                  {project.status === 'active' ? 'Ativo' : 
-                   project.status === 'planning' ? 'Planejamento' :
-                   project.status === 'completed' ? 'Concluído' : 'Cancelado'}
-                </span>
-              </div>
-              <h3 className="project-list-title">{project.name}</h3>
-              <p className="project-list-description">{project.description || 'Sem descrição'}</p>
-              <div className="project-list-progress">
-                <div className="progress-bar">
-                  <div 
-                    className="progress-fill" 
-                    style={{ width: `${Math.min(((project.spent || 0) / (project.budget || 1)) * 100, 100)}%` }}
-                  />
-                </div>
-                <div className="project-list-numbers">
-                  <span className="budget">💰 R$ {(project.budget || 0).toLocaleString()}</span>
-                  <span className="spent">💸 R$ {(project.spent || 0).toLocaleString()}</span>
+                <div className="project-card-buttons">
+                  <Link 
+                    to={`/projects/${project._id}/edit`} 
+                    className="project-edit-btn"
+                    title="Editar projeto"
+                  >
+                    ✏️
+                  </Link>
+                  <button 
+                    onClick={() => handleDelete(project._id, project.name)}
+                    className="project-delete-btn"
+                    title="Excluir projeto"
+                  >
+                    🗑️
+                  </button>
                 </div>
               </div>
-            </Link>
+              <Link to={`/projects/${project._id}`} style={{ textDecoration: 'none' }}>
+                <h3 className="project-list-title">{project.name}</h3>
+                <p className="project-list-description">{project.description || 'Sem descrição'}</p>
+                <div className="project-list-progress">
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-fill" 
+                      style={{ width: `${Math.min(((project.spent || 0) / (project.budget || 1)) * 100, 100)}%` }}
+                    />
+                  </div>
+                  <div className="project-list-numbers">
+                    <span className="budget">💰 R$ {(project.budget || 0).toLocaleString()}</span>
+                    <span className="spent">💸 R$ {(project.spent || 0).toLocaleString()}</span>
+                  </div>
+                </div>
+              </Link>
+            </div>
           ))}
         </div>
       )}

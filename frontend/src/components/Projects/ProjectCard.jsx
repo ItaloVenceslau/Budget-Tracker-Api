@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiEdit2, FiTrash2, FiCheckCircle, FiXCircle, FiActivity } from 'react-icons/fi';
-import { formatCurrency } from '../../utils/formatCurrency';
 import { projectService } from '../../services/projectService';
 import toast from 'react-hot-toast';
 
 const statusColors = {
-  planning: 'bg-yellow-100 text-yellow-800',
-  active: 'bg-green-100 text-green-800',
-  completed: 'bg-blue-100 text-blue-800',
-  cancelled: 'bg-red-100 text-red-800'
+  planning: 'status-planning',
+  active: 'status-active',
+  completed: 'status-completed',
+  cancelled: 'status-cancelled'
 };
 
 const statusLabels = {
@@ -21,7 +20,7 @@ const statusLabels = {
 
 export const ProjectCard = ({ project, onRefresh }) => {
   const [deleting, setDeleting] = useState(false);
-  const percentage = (project.spent / project.budget) * 100;
+  const percentage = ((project.spent || 0) / (project.budget || 1)) * 100;
 
   const handleDelete = async () => {
     if (window.confirm(`Tem certeza que deseja excluir o projeto "${project.name}"?`)) {
@@ -39,65 +38,50 @@ export const ProjectCard = ({ project, onRefresh }) => {
   };
 
   return (
-    <div className="card hover:shadow-lg transition-all">
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <h3 className="text-xl font-bold text-gray-900">{project.name}</h3>
-          {project.description && (
-            <p className="text-gray-500 text-sm mt-1">{project.description}</p>
-          )}
+    <div className="project-card">
+      <div className="project-card-header-actions">
+        <div className="project-list-icon">
+          <FiActivity size={24} />
         </div>
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[project.status]}`}>
-          <span className="flex items-center gap-1">
-            <FiActivity className="w-3 h-3" />
-            {statusLabels[project.status]}
-          </span>
+        <div className="project-card-actions">
+          <Link to={`/projects/${project._id}/edit`} className="action-btn edit-btn" title="Editar">
+            <FiEdit2 size={16} />
+          </Link>
+          <button onClick={handleDelete} disabled={deleting} className="action-btn delete-btn" title="Excluir">
+            <FiTrash2 size={16} />
+          </button>
+        </div>
+      </div>
+
+      <h3 className="project-card-title">{project.name}</h3>
+      <p className="project-card-description">{project.description || 'Sem descrição'}</p>
+
+      <div className="project-card-status-wrapper">
+        <span className={`project-card-status ${statusColors[project.status]}`}>
+          {statusLabels[project.status]}
         </span>
       </div>
 
-      <div className="space-y-3 mt-4">
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Orçamento:</span>
-          <span className="font-semibold">{formatCurrency(project.budget)}</span>
+      <div className="project-card-budget-info">
+        <div className="budget-item">
+          <span className="budget-label">Orçamento</span>
+          <span className="budget-value">R$ {(project.budget || 0).toLocaleString()}</span>
         </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Gasto:</span>
-          <span className="font-semibold text-red-600">{formatCurrency(project.spent)}</span>
+        <div className="budget-item">
+          <span className="budget-label">Gasto</span>
+          <span className="budget-value spent">R$ {(project.spent || 0).toLocaleString()}</span>
         </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Restante:</span>
-          <span className="font-semibold text-green-600">{formatCurrency(project.budget - project.spent)}</span>
-        </div>
-
-        <div className="relative pt-1">
-          <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-            <div
-              style={{ width: `${Math.min(percentage, 100)}%` }}
-              className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
-                percentage > 90 ? 'bg-red-500' : percentage > 70 ? 'bg-yellow-500' : 'bg-green-500'
-              }`}
-            ></div>
-          </div>
-          <p className="text-xs text-gray-500 mt-1">{percentage.toFixed(1)}% utilizado</p>
+        <div className="budget-item">
+          <span className="budget-label">Restante</span>
+          <span className="budget-value remaining">R$ {((project.budget || 0) - (project.spent || 0)).toLocaleString()}</span>
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 mt-4 pt-3 border-t">
-        <Link
-          to={`/projects/${project._id}`}
-          className="text-blue-600 hover:text-blue-700 p-1"
-          title="Ver detalhes"
-        >
-          <FiEdit2 className="w-5 h-5" />
-        </Link>
-        <button
-          onClick={handleDelete}
-          disabled={deleting}
-          className="text-red-600 hover:text-red-700 p-1 disabled:opacity-50"
-          title="Excluir"
-        >
-          <FiTrash2 className="w-5 h-5" />
-        </button>
+      <div className="project-card-progress">
+        <div className="progress-bar">
+          <div className="progress-fill" style={{ width: `${Math.min(percentage, 100)}%` }} />
+        </div>
+        <div className="progress-text">{percentage.toFixed(0)}% utilizado</div>
       </div>
     </div>
   );

@@ -1264,3 +1264,96 @@ body {
   margin: 0;
   line-height: 1.3;
 }
+
+/* ===== PROJECT CARD ACTIONS ===== */
+.project-card-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.project-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.action-btn:hover {
+  transform: scale(1.05);
+}
+
+.edit-btn:hover {
+  background: #dbeafe;
+  color: #3b82f6;
+}
+
+.delete-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* ===== PROJECT CARD STATUS ===== */
+.project-card-status-wrapper {
+  margin-bottom: 1rem;
+}
+
+.project-card-status {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+/* ===== PROJECT CARD BUDGET INFO ===== */
+.project-card-budget-info {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.budget-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  padding: 0.25rem 0;
+}
+
+.budget-label {
+  color: #6b7280;
+}
+
+.budget-value {
+  font-weight: 600;
+  color: #10b981;
+}
+
+.budget-value.spent {
+  color: #ef4444;
+}
+
+.budget-value.remaining {
+  color: #3b82f6;
+}
+
+.progress-text {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+  text-align: right;
+}
