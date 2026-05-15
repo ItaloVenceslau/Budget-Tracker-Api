@@ -20,11 +20,32 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      console.log('🔐 Tentando login:', email);
+      // 🔥 VALIDAÇÃO FORTE ANTES DE ENVIAR
+      if (!email || typeof email !== 'string') {
+        console.error('❌ Email inválido:', email);
+        toast.error('Email inválido');
+        return false;
+      }
+      
+      if (!password || typeof password !== 'string') {
+        console.error('❌ Senha inválida:', password);
+        toast.error('Senha inválida');
+        return false;
+      }
+      
+      if (password.length < 6) {
+        toast.error('A senha deve ter pelo menos 6 caracteres');
+        return false;
+      }
+      
+      email = email.trim().toLowerCase();
+      
+      console.log('🔐 Tentando login com:', email);
+      console.log('🔐 Senha tem', password.length, 'caracteres');
       
       const data = await authService.login({ email, password });
       
-      if (!data.token) {
+      if (!data || !data.token) {
         throw new Error('Token não recebido');
       }
       
@@ -37,46 +58,21 @@ export const AuthProvider = ({ children }) => {
       
       toast.success(`Bem-vindo, ${userName}! 🎉`);
       return true;
-    } catch (error) {
-      console.error('Erro no login:', error);
-      const errorMessage = error.response?.data?.error || 'Erro no login';
-      toast.error(errorMessage);
-      return false;
-    }
-  };
-
-  const register = async (name, email, password) => {
-    try {
-      const data = await authService.register({ name, email, password });
       
-      if (!data.token) {
-        throw new Error('Token não recebido');
+    } catch (error) {
+      console.error('❌ Erro detalhado no login:', error);
+      
+      // 🔥 TRATAMENTO DO ERRO 500
+      let errorMessage = 'Erro no login. Tente novamente.';
+      
+      if (error.response?.status === 500) {
+        errorMessage = 'Erro no servidor. Seu usuário pode estar corrompido. Tente criar uma nova conta.';
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
       }
       
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('userName', name);
-      
-      setUser({ name: name });
-      
-      toast.success(`Conta criada! Bem-vindo, ${name}! 🎉`);
-      return true;
-    } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Erro no cadastro';
       toast.error(errorMessage);
       return false;
     }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userName');
-    setUser(null);
-    toast.success('Logout realizado! 👋');
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  }
 };
