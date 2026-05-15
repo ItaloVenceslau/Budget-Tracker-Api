@@ -5,6 +5,14 @@ import { AuthContext } from '../../context/AuthContext';
 import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
 
 export const Login = () => {
+
+  console.log('🔐 Login chamado com:', { email, password: password ? '***' : 'UNDEFINED' });
+    
+  if (!email || !password) {
+    console.error('❌ Email ou senha vazios');
+    toast.error('Preencha email e senha');
+    return false;
+  }
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,11 +21,13 @@ export const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('📤 Enviando login:', { email, password }); // ← ADICIONE
     setLoading(true);
     const success = await login(email, password);
     setLoading(false);
     if (success) navigate('/dashboard');
   };
+
 
   return (
     <div className="auth-container">
