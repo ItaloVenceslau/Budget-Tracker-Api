@@ -1,107 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { projectService } from '../../services/projectService';
-import { LoadingSpinner } from '../Common/LoadingSpinner';
-import { FiFolder, FiPlus } from 'react-icons/fi';
+import { FiFolder } from 'react-icons/fi';
 
-export const ProjectsList = () => {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
-  const loadProjects = async () => {
-    try {
-      setLoading(true);
-      const data = await projectService.getAll();
-      console.log('Projetos carregados:', data); // LOG PARA DEBUG
-      setProjects(data || []);
-      setError(null);
-    } catch (err) {
-      console.error('Erro ao carregar projetos:', err);
-      setError('Não foi possível carregar os projetos. Tente novamente.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (error) {
-    return (
-      <div className="empty-state">
-        <div className="empty-state-icon">⚠️</div>
-        <h3 className="empty-state-title">Erro ao carregar</h3>
-        <p className="empty-state-description">{error}</p>
-        <button onClick={loadProjects} className="btn-primary mt-4">
-          Tentar novamente
-        </button>
-      </div>
-    );
-  }
-
+export const ProjectList = ({ projects, onRefresh }) => {
   if (projects.length === 0) {
     return (
-      <div className="empty-state">
-        <div className="empty-state-icon">📁</div>
-        <h3 className="empty-state-title">Nenhum projeto ainda</h3>
-        <p className="empty-state-description">
-          Comece criando seu primeiro projeto financeiro
-        </p>
-        <Link to="/projects/new" className="btn-new-project mt-4 inline-flex">
-          <FiPlus /> Criar primeiro projeto
-        </Link>
+      <div className="text-center py-8">
+        <p className="text-gray-500">Nenhum projeto cadastrado ainda.</p>
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="dashboard-header">
-        <h1>Meus Projetos</h1>
-        <p>Gerencie todos os seus projetos financeiros</p>
-      </div>
-
-      <div className="flex justify-end mb-6">
-        <Link to="/projects/new" className="btn-new-project">
-          <FiPlus /> Novo Projeto
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {projects.map(project => (
+        <Link key={project._id} to={`/projects/${project._id}`} className="bg-white rounded-lg p-4 shadow hover:shadow-md transition">
+          <div className="flex items-center gap-2 mb-2">
+            <FiFolder className="text-indigo-500" />
+            <h3 className="font-bold">{project.name}</h3>
+          </div>
+          <p className="text-sm text-gray-500 mb-2">{project.description || 'Sem descrição'}</p>
+          <div className="flex justify-between items-center">
+            <span className="text-green-600 font-bold">R$ {project.budget?.toLocaleString()}</span>
+            <span className="text-xs px-2 py-1 rounded-full bg-gray-100">
+              {project.status === 'active' ? 'Ativo' : project.status === 'completed' ? 'Concluído' : 'Planejamento'}
+            </span>
+          </div>
         </Link>
-      </div>
-
-      <div className="projects-grid">
-        {projects.map((project) => (
-          <Link to={`/projects/${project._id}`} key={project._id} className="project-card">
-            <div className="project-card-icon">
-              <FiFolder size={24} />
-            </div>
-            <h3 className="project-card-title">{project.name}</h3>
-            <p className="project-card-description">
-              {project.description || 'Sem descrição'}
-            </p>
-            <div className="project-card-footer">
-              <span className="project-card-budget">
-                R$ {project.budget?.toLocaleString() || 0}
-              </span>
-              <span className={`project-card-status status-${project.status || 'planning'}`}>
-                {project.status === 'active' ? 'Ativo' : 
-                 project.status === 'planning' ? 'Planejamento' :
-                 project.status === 'completed' ? 'Concluído' : 'Cancelado'}
-              </span>
-            </div>
-            <div className="project-card-progress">
-              <div 
-                className="project-card-progress-bar" 
-                style={{ width: `${Math.min(((project.spent || 0) / (project.budget || 1)) * 100, 100)}%` }}
-              />
-            </div>
-          </Link>
-        ))}
-      </div>
+      ))}
     </div>
   );
 };
