@@ -20,11 +20,42 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
   try {
+    console.log('1️⃣ AuthContext.login chamado com:', { email, password: password ? '***' : 'MISSING' });
+    
+    if (!email || !password) {
+      console.error('❌ Email ou senha vazios');
+      toast.error('Preencha email e senha');
+      return false;
+    }
+    
+    console.log('2️⃣ Chamando authService.login...');
     const data = await authService.login({ email, password });
-    // ... resto
+    
+    console.log('3️⃣ Dados recebidos do service:', data);
+    
+    if (!data || !data.token) {
+      console.error('❌ Token não veio na resposta:', data);
+      toast.error('Erro ao fazer login');
+      return false;
+    }
+    
+    console.log('4️⃣ Salvando token no localStorage...');
+    localStorage.setItem('token', data.token);
+    
+    const userName = data.user?.name || email.split('@')[0];
+    localStorage.setItem('userName', userName);
+    
+    console.log('5️⃣ Atualizando estado do usuário...');
+    setUser({ name: userName });
+    
+    console.log('6️⃣ Login completo! Redirecionando...');
+    toast.success(`Bem-vindo, ${userName}! 🎉`);
+    return true;
+    
   } catch (error) {
-    // APENAS MOSTRA ERRO - NÃO TENTA RESETAR
-    toast.error('Email ou senha inválidos');
+    console.error('❌ ERRO COMPLETO:', error);
+    console.error('❌ Response:', error.response?.data);
+    toast.error(error.response?.data?.error || 'Erro no login');
     return false;
   }
 };
