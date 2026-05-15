@@ -14,14 +14,18 @@ export const authService = {
   },
   
   login: async (credentials) => {
-    console.log('🔐 Login enviando:', credentials);
-    // 🔥 GARANTIR QUE OS CAMPOS ESTÃO CORRETOS
-    if (!credentials.email || !credentials.password) {
-      throw new Error('Email e senha são obrigatórios');
-    }
-    const response = await api.post('/auth/login', credentials);
-    return response.data;
-  },
+  console.log('🔍 authService.login RECEBEU:', credentials);
+  console.log('🔍 Tipo do email:', typeof credentials.email);
+  console.log('🔍 Tipo da senha:', typeof credentials.password);
+  console.log('🔍 Senha é undefined?', credentials.password === undefined);
+  
+  if (!credentials.password) {
+    console.error('❌ SENHA ESTÁ UNDEFINED! Verifique o formulário.');
+  }
+  
+  const response = await api.post('/auth/login', credentials);
+  return response.data;
+},
   
   logout: () => {
     console.log('🚪 Fazendo logout...');
