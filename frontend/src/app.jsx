@@ -12,6 +12,76 @@ import { ProjectForm } from './components/Projects/ProjectForm';
 import { ProjectDetail } from './components/Projects/ProjectDetail';
 import { PageTransition } from './components/Common/PageTransition';
 
+// Componente temporário para lista de projetos
+const ProjectsList = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { projectService } = require('./services/projectService');
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    try {
+      const data = await projectService.getAll();
+      setProjects(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div className="dashboard-header">
+      <h1>Meus Projetos</h1>
+      <p>Lista completa de todos os seus projetos</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        {projects.map(project => (
+          <Link to={`/projects/${project._id}`} key={project._id} className="card hover:shadow-xl transition-all">
+            <h3 className="font-bold text-lg mb-2">{project.name}</h3>
+            <p className="text-gray-500 text-sm mb-3">{project.description || 'Sem descrição'}</p>
+            <div className="flex justify-between items-center">
+              <span className="text-primary font-bold">R$ {project.budget.toLocaleString()}</span>
+              <span className={`badge ${project.status === 'active' ? 'badge-active' : 'badge-planning'}`}>
+                {project.status}
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Componente para Analytics
+const Analytics = () => {
+  return (
+    <div className="dashboard-header">
+      <h1>Analytics</h1>
+      <p>Estatísticas detalhadas dos seus projetos</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        <div className="card">
+          <h3 className="font-bold text-lg mb-4">Em desenvolvimento</h3>
+          <p className="text-gray-500">Em breve você terá gráficos e estatísticas detalhadas aqui!</p>
+        </div>
+        <div className="card">
+          <h3 className="font-bold text-lg mb-4">Próximas features</h3>
+          <ul className="space-y-2 text-gray-500">
+            <li>📊 Gráficos de gastos por categoria</li>
+            <li>📈 Tendências mensais</li>
+            <li>🎯 Metas e orçamentos</li>
+            <li>📑 Relatórios exportáveis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 function App() {
   const location = useLocation();
 
