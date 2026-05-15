@@ -16,92 +16,72 @@ export const Register = () => {
     setLoading(true);
     const success = await register(name, email, password);
     setLoading(false);
-    if (success) {
-      navigate('/dashboard');
-    }
+    if (success) navigate('/dashboard');
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-            <FiUserPlus className="w-8 h-8 text-green-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">Criar Conta</h1>
-          <p className="text-gray-500 mt-2">Comece a gerenciar seus projetos</p>
+    <div className="auth-container">
+      <div className="auth-card">
+        <div className="auth-icon">
+          <FiUserPlus size={28} />
         </div>
+        <h1 className="auth-title">Criar Conta</h1>
+        <p className="auth-subtitle">Comece a gerenciar seus projetos</p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-            <div className="relative">
-              <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="input pl-10"
-                placeholder="Seu nome"
-                required
-                minLength={3}
-                disabled={loading}
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="auth-input-group">
+            <FiUser className="auth-input-icon" />
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="auth-input"
+              placeholder="Nome completo"
+              required
+              minLength={3}
+              disabled={loading}
+            />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <div className="relative">
-              <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input pl-10"
-                placeholder="seu@email.com"
-                required
-                disabled={loading}
-              />
-            </div>
+          <div className="auth-input-group">
+            <FiMail className="auth-input-icon" />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="auth-input"
+              placeholder="seu@email.com"
+              required
+              disabled={loading}
+            />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
-            <div className="relative">
-              <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input pl-10"
-                placeholder="mínimo 6 caracteres"
-                required
-                minLength={6}
-                disabled={loading}
-              />
-            </div>
+          <div className="auth-input-group">
+            <FiLock className="auth-input-icon" />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="auth-input"
+              placeholder="Senha (mínimo 6 caracteres)"
+              required
+              minLength={6}
+              disabled={loading}
+            />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full py-3 flex items-center justify-center gap-2"
+            className="auth-button"
           >
-            {loading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Criando conta...
-              </>
-            ) : (
-              'Criar Conta'
-            )}
+            {loading ? 'Criando conta...' : 'Criar Conta'}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-6">
+        <p className="auth-footer">
           Já tem uma conta?{' '}
-          <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link to="/login" className="auth-link">
             Faça login
           </Link>
         </p>

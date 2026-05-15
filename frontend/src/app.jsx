@@ -11,6 +11,8 @@ import { Dashboard } from './components/Dashboard/Dashboard';
 import { ProjectForm } from './components/Projects/ProjectForm';
 import { ProjectDetail } from './components/Projects/ProjectDetail';
 import { PageTransition } from './components/Common/PageTransition';
+import { ProjectsList } from './components/Projects/ProjectsList';
+import { Analytics } from './components/Analytics/Analytics';
 
 // Componente temporário para lista de projetos
 const ProjectsList = () => {
