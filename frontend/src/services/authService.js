@@ -1,131 +1,60 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { authService } from '../services/authService';
-import toast from 'react-hot-toast';
+import api from './api';
 
-export const AuthContext = createContext();
-
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Verificar se há token salvo ao carregar
-    const token = authService.getToken();
-    const savedUser = authService.getUser();
-    
-    if (token && savedUser) {
-      console.log('🔄 Usuário já autenticado:', savedUser.email);
-      setUser(savedUser);
-    } else if (token && !savedUser) {
-      console.log('⚠️ Token encontrado sem dados do usuário');
-    }
-    setLoading(false);
-  }, []);
-
-  const login = async (email, password) => {
+export const authService = {
+  register: async (userData) => {
     try {
-      // Limpar dados antigos
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('userName');
-      
-      console.log('🔐 Enviando requisição de login...');
-      const data = await authService.login({ email, password });
-      
-      if (!data.token) {
-        throw new Error('Token não recebido');
-      }
-      
-      // Salvar token
-      authService.setToken(data.token);
-      
-      // Salvar dados do usuário
-      const userName = data.user?.name || email.split('@')[0];
-      const userData = { 
-        email, 
-        name: userName,
-        id: data.user?.id 
-      };
-      
-      authService.setUser(userData);
-      localStorage.setItem('userName', userName);
-      
-      setUser(userData);
-      
-      toast.success(`Bem-vindo, ${userName}! 🎉`);
-      console.log('✅ Login concluído');
-      return true;
+      console.log('📝 Registrando usuário:', userData.email);
+      const response = await api.post('/auth/register', userData);
+      console.log('✅ Registro bem-sucedido');
+      return response.data;
     } catch (error) {
-      console.error('❌ Erro detalhado no login:', error);
-      const errorMessage = error.response?.data?.error || 
-                          error.response?.data?.message || 
-                          'Erro no login';
-      toast.error(errorMessage);
-      return false;
+      console.error('❌ Erro no registro:', error.response?.data);
+      throw error;
     }
-  };
-
-  const register = async (name, email, password) => {
+  },
+  
+  login: async (credentials) => {
     try {
-      // Limpar dados antigos
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('userName');
-      
-      console.log('📝 Enviando requisição de registro...');
-      const data = await authService.register({ name, email, password });
-      
-      if (!data.token) {
-        throw new Error('Token não recebido');
-      }
-      
-      // Salvar token
-      authService.setToken(data.token);
-      
-      // Salvar dados do usuário
-      const userData = { 
-        email, 
-        name: name,
-        id: data.user?.id 
-      };
-      
-      authService.setUser(userData);
-      localStorage.setItem('userName', name);
-      
-      setUser(userData);
-      
-      toast.success(`Conta criada com sucesso! Bem-vindo, ${name}! 🎉`);
-      console.log('✅ Registro concluído');
-      return true;
+      console.log('🔐 Tentando login:', credentials.email);
+      const response = await api.post('/auth/login', credentials);
+      console.log('✅ Login bem-sucedido');
+      return response.data;
     } catch (error) {
-      console.error('❌ Erro detalhado no registro:', error);
-      const errorMessage = error.response?.data?.error || 
-                          error.response?.data?.message || 
-                          'Erro no cadastro';
-      toast.error(errorMessage);
-      return false;
+      console.error('❌ Erro no login:', error.response?.data);
+      throw error;
     }
-  };
-
-  const logout = () => {
-    console.log('🚪 Executando logout...');
-    authService.logout();
-    setUser(null);
-    toast.success('Logout realizado. Até mais! 👋');
-  };
-
-  const value = {
-    user,
-    loading,
-    login,
-    register,
-    logout,
-    isAuthenticated: !!user || authService.isAuthenticated()
-  };
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  },
+  
+  logout: () => {
+    console.log('🚪 Fazendo logout...');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userName');
+    sessionStorage.clear();
+  },
+  
+  getToken: () => {
+    const token = localStorage.getItem('token');
+    console.log('🔑 Token atual:', token ? `${token.substring(0, 20)}...` : 'nenhum');
+    return token;
+  },
+  
+  setToken: (token) => {
+    console.log('💾 Salvando token...');
+    localStorage.setItem('token', token);
+  },
+  
+  setUser: (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+  },
+  
+  getUser: () => {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  },
+  
+  isAuthenticated: () => {
+    const token = localStorage.getItem('token');
+    return !!token;
+  }
 };
